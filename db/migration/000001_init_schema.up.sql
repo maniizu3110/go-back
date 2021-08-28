@@ -10,7 +10,7 @@ CREATE TABLE `entries` (
   `id` bigint PRIMARY KEY,
   `account_id` bigint,
   `amount` bigint NOT NULL COMMENT 'can be negative or positive',
-  `created_at` timestamp NOT NULL DEFAULT (now())
+  `created_at` timestamp
 );
 
 CREATE TABLE `transfers` (
@@ -18,7 +18,7 @@ CREATE TABLE `transfers` (
   `from_account_id` bigint NOT NULL,
   `to_account_id` bigint NOT NULL,
   `amount` bigint NOT NULL COMMENT 'must be positive',
-  `created_at` timestamp DEFAULT (now())
+  `created_at` timestamp
 );
 
 ALTER TABLE `entries` ADD FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`);

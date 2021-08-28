@@ -8,6 +8,9 @@ migratedown:
 	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:13306)/simple_bank" -verbose down
 
 login mysql:
-	docker exec -it mysql  mysql -u root -p 
+	docker exec -it mysql  mysql -u root -p
 
-.PHONY: sql migrateup migratedown login mysql
+sqlc:
+	sqlc generate
+
+.PHONY: sql migrateup migratedown login mysql sqlc
