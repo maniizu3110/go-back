@@ -5,36 +5,33 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
-const createAccounts = `-- name: CreateAccounts :exec
+const createAccount = `-- name: CreateAccount :one
 INSERT INTO accounts (
     owner,
     balance,
-    currency,
-    created_at
+    currency
 ) VALUES (
-    ?,
-    ?,
-    ?,
-    ?
-)
+  $1, $2, $3
+) RETURNING id, owner, balance, currency, created_at
 `
 
-type CreateAccountsParams struct {
-	Owner     string       `json:"owner"`
-	Balance   int64        `json:"balance"`
-	Currency  string       `json:"currency"`
-	CreatedAt sql.NullTime `json:"created_at"`
+type CreateAccountParams struct {
+	Owner    string `json:"owner"`
+	Balance  int64  `json:"balance"`
+	Currency string `json:"currency"`
 }
 
-func (q *Queries) CreateAccounts(ctx context.Context, arg CreateAccountsParams) error {
-	_, err := q.db.ExecContext(ctx, createAccounts,
-		arg.Owner,
-		arg.Balance,
-		arg.Currency,
-		arg.CreatedAt,
+func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, createAccount, arg.Owner, arg.Balance, arg.Currency)
+	var i Accounts
+	err := row.Scan(
+		&i.ID,
+		&i.Owner,
+		&i.Balance,
+		&i.Currency,
+		&i.CreatedAt,
 	)
-	return err
+	return i, err
 }

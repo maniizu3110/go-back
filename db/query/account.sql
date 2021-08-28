@@ -1,13 +1,10 @@
-
-/* name: CreateAccounts :exec */
+-- name: CreateAccount :one
 INSERT INTO accounts (
     owner,
     balance,
-    currency,
-    created_at
+    currency
 ) VALUES (
-    ?,
-    ?,
-    ?,
-    ?
-);
+  $1, $2, $3
+) RETURNING *;
+
+

@@ -1,16 +1,22 @@
-sql:
-	docker-compose up -d
+migrateup:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
+
+createdb:
+	docker exec -it simplebank_db_1 createdb --username=root --owner=root simple_bank
+
+dropdb:
+	docker exec -it simplebank_db_1 dropdb simple_bank
 
 migrateup:
-	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:13306)/simple_bank" -verbose up
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up 1
 
 migratedown:
-	migrate -path db/migration -database "mysql://root:secret@tcp(localhost:13306)/simple_bank" -verbose down
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down
 
-login mysql:
-	docker exec -it mysql  mysql -u root -p
+migratedown1:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
 
 sqlc:
 	sqlc generate
 
-.PHONY: sql migrateup migratedown login mysql sqlc
+.PHONY: network postgres createdb dropdb migrateup migratedown migrateup1 migratedown1 sqlc test server mock
