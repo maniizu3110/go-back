@@ -1,9 +1,7 @@
-version: '3'
-services:
-  db:
-    build: .
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: secret
+db:
+  image: mysql
+  container_name: db
+  environment:
+    MYSQL_ROOT_PASSWORD: secret
+  ports:
+  - "13306:3306"
