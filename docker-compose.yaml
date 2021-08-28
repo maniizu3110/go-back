@@ -1,0 +1,7 @@
+db:
+  image: mysql
+  container_name: db
+  environment:
+    MYSQL_ROOT_PASSWORD: secret
+  ports:
+  - "13306:3306"
