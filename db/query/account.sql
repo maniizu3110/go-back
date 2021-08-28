@@ -3,12 +3,6 @@
 SELECT * FROM account
 WHERE id = $1 LIMIT 1;
 
--- name: ListAccounts :many
-SELECT * FROM account
-ORDER BY name;
-
-
-
 -- name: CreateAccount :one
 INSERT INTO account (
     owner,
@@ -27,3 +21,9 @@ WHERE id = $1;
 UPDATE account SET balance = $2
 WHERE id = $1
 RETURNING *;
+
+-- name: ListAccount :many
+SELECT * FROM account
+ORDER BY id
+LIMIT $1
+OFFSET $2;
