@@ -15,8 +15,8 @@ type Store struct {
 
 func NewStore(db *sql.DB) *Store {
 	return &Store{
-		Queries: New(db),
 		db:      db,
+		Queries: New(db),
 	}
 }
 
@@ -51,7 +51,42 @@ type TransferTxResult struct {
 	Transfer    Transfer `json:"transfer"`
 	FromAccount Account  `json:"from_account"`
 	ToAccount   Account  `json:"to_account"`
+	FromEntry   Entry    `json:"from_entry"`
+	ToEntry     Entry    `json:"to_entry"`
 }
 
+//goはgenericsがないのでcloserを使う
 // TransactionTx performs a money transfer from one account to the other
 // It create a transfer record,add account entries,and update accounts' balance within asingle database transaction
+func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
+	var result TransferTxResult
+
+	err := store.execTx(ctx, func(q *Queries) error {
+		var err error
+		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
+			FromAccountID: arg.FromAccountID,
+			ToAccountID:   arg.ToAccountID,
+			Amount:        arg.Amount,
+		})
+		if err != nil {
+			return err
+		}
+		result.FromEntry, err = q.CreateEntry(ctx, CreateEntryParams{
+			AccountID: arg.FromAccountID,
+			Amount:    -arg.Amount,
+		})
+		if err != nil {
+			return err
+		}
+		result.ToEntry, err = q.CreateEntry(ctx, CreateEntryParams{
+			AccountID: arg.ToAccountID,
+			Amount:    arg.Amount,
+		})
+		if err != nil {
+			return err
+		}
+		//TODO:デッドロックを避けながらupdateを実装する
+		return nil
+	})
+	return result, err
+}

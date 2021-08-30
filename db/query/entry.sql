@@ -1,3 +1,4 @@
+-- name: CreateEntry :one
 INSERT INTO entry (
   account_id,
   amount
