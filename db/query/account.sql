@@ -3,6 +3,11 @@
 SELECT * FROM account
 WHERE id = $1 LIMIT 1;
 
+-- name: GetAccountForUpdate :one
+SELECT * FROM account
+WHERE id = $1 LIMIT 1
+FOR UPDATE;
+
 -- name: CreateAccount :one
 INSERT INTO account (
     owner,
