@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var existed = make(map[int]bool)
 
 func TestTransferTx(t *testing.T) {
 	store := NewStore(testDB)
