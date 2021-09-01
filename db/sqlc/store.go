@@ -55,6 +55,8 @@ type TransferTxResult struct {
 	ToEntry     Entry    `json:"to_entry"`
 }
 
+var txKey = struct{}{}
+
 //goはgenericsがないのでcloserを使う
 // TransactionTx performs a money transfer from one account to the other
 // It create a transfer record,add account entries,and update accounts' balance within asingle database transaction
