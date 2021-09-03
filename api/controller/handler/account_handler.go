@@ -20,6 +20,7 @@ func AssignAccountHandler(g *echo.Group) {
 			return handler(c)
 		}
 	})
+	g.POST("/",CreateAccountHandler)
 	g.GET("/:id", GetAccountHandler)
 }
 
@@ -33,7 +34,20 @@ func GetAccountHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-
 	return c.JSON(http.StatusOK, account)
-
 }
+
+func CreateAccountHandler(c echo.Context) error {
+	service := c.Get("Service").(service.AccountService)
+	params := &sqlc.CreateAccountParams{}
+	c.Bind(params)
+	//TODO:validation
+	account,err := service.CreateAccount(params)
+	if err != nil {
+		return err
+	}
+	
+	return c.JSON(http.StatusOK,account)
+}
+
+
