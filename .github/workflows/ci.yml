@@ -25,6 +25,8 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
+    #CI テストを実行するまでに、リポジトリにコードのコピーをダウンロードする
+    - name: Check out repository code 
     - uses: actions/checkout@v2
 
     - name: Set up Go
@@ -34,8 +36,8 @@ jobs:
 
     - name: Check out code into the Go module directory
       run: 
-        curl -L https://github.com/golang-migrate/migrate/releases#:~:text=migrate.linux-amd64.tar.gz | tar xvz
-        sudo migrate.linux-amd64 /usr/bin/
+        curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
+        sudo migrate.linux-amd64 /usr/bin/migrate
         which migrate
 
 
