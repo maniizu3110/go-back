@@ -1,17 +1,16 @@
 package api
 
 import (
-	db "simplebank/db/sqlc"
-
+	"simplebank/api/sqlc"
 	"github.com/labstack/echo/v4"
 )
 
 type Server struct {
-	store  *db.Store
+	store  *sqlc.Store
 	router *echo.Echo
 }
 
-func NewServer(store *db.Store) *Server {
+func NewServer(store *sqlc.Store) *Server {
 	server := &Server{store: store}
 	server.router = server.SetRouter()
 	return server

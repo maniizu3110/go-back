@@ -3,7 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	db "simplebank/db/sqlc"
+	"simplebank/api/sqlc"
 
 	// db "simplebank/db/sqlc"
 
@@ -22,7 +22,7 @@ func AssignAccountHandler(g *echo.Group) {
 }
 
 func GetAccountHandler(c echo.Context) error {
-	store := c.Get("store").(*db.Store)
+	store := c.Get("store").(*sqlc.Store)
 	account,err := store.GetAccount(c.Request().Context(),1)
 	if err != nil {
 		return err

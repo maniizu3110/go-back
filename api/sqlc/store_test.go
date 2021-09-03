@@ -1,4 +1,4 @@
-package db
+package sqlc
 
 import (
 	"context"
@@ -7,7 +7,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 )
-
 
 func TestTransferTx(t *testing.T) {
 	store := NewStore(testDB)
