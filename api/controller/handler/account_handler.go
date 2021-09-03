@@ -3,6 +3,8 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	db "simplebank/db/sqlc"
+
 	// db "simplebank/db/sqlc"
 
 	"github.com/labstack/echo/v4"
@@ -20,10 +22,12 @@ func AssignAccountHandler(g *echo.Group) {
 }
 
 func GetAccountHandler(c echo.Context) error {
-	// store := c.Get("store").(db.Store)
-	// fmt.Printf("store:%v",store)
+	store := c.Get("store").(*db.Store)
+	account,err := store.GetAccount(c.Request().Context(),1)
+	if err != nil {
+		return err
+	}
 
-	// fmt.Println("handler")
-	return c.JSON(http.StatusOK, "ここまできてるよ")
+	return c.JSON(http.StatusOK, account)
 
 }
