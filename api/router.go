@@ -2,7 +2,7 @@ package api
 
 import (
 	"simplebank/api/controller/handler"
-	"simplebank/api/controller/middleware"
+	"simplebank/api/middleware"
 
 	"github.com/labstack/echo/v4"
 )
