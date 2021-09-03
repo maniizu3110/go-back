@@ -2,10 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"simplebank/api"
-	_ "github.com/lib/pq"
 	db "simplebank/db/sqlc"
+
+	_ "github.com/lib/pq"
 )
 
 const (
@@ -16,6 +18,8 @@ const (
 
 func main(){
 	conn,err := sql.Open(dbDriver,dbSource)
+	fmt.Printf("%+v",conn)
+	fmt.Printf("%+v",err)
 	if err != nil {
 		log.Fatal("cannot connect to db:",err)
 	}

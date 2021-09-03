@@ -1,12 +1,18 @@
 package api
 
-import "github.com/labstack/echo/v4"
+import (
+	"simplebank/api/controller/handler"
+	"simplebank/api/controller/middleware"
 
+	"github.com/labstack/echo/v4"
+)
 
-
-
-func (server *Server)SetRouter() *echo.Echo{
+func (server *Server) SetRouter() *echo.Echo {
 	e := echo.New()
-	//色々middleware設定する用
+	middleware.CORS(e)
+	{
+		g := e.Group("/api/v1", middleware.SetStore(server.store))
+		handler.AssignAccountHandler(g.Group("/account"))
+	}
 	return e
 }
