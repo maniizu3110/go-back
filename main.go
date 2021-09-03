@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"simplebank/api"
 	db "simplebank/db/sqlc"
@@ -18,8 +17,6 @@ const (
 
 func main(){
 	conn,err := sql.Open(dbDriver,dbSource)
-	fmt.Printf("%+v",conn)
-	fmt.Printf("%+v",err)
 	if err != nil {
 		log.Fatal("cannot connect to db:",err)
 	}
