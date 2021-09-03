@@ -8,6 +8,7 @@ import (
 type AccountService interface {
 	GetAccountByID(id int64) (sqlc.Account, error)
 	CreateAccount(params *sqlc.CreateAccountParams) (sqlc.Account, error)
+	GetListAccount(params *sqlc.ListAccountParams)([]sqlc.Account,error)
 }
 
 type accountServiceImpl struct {
@@ -34,4 +35,12 @@ func (s *accountServiceImpl) CreateAccount(params *sqlc.CreateAccountParams) (sq
 		return sqlc.Account{}, err
 	}
 	return account, nil
+}
+
+func (s *accountServiceImpl) GetListAccount(params *sqlc.ListAccountParams)([]sqlc.Account,error){
+	accouts,err := s.store.ListAccount(context.Background(),*params)
+	if err != nil {
+		return nil,err
+	}
+	return accouts,nil
 }
