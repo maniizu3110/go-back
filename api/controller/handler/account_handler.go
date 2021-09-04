@@ -23,6 +23,7 @@ func AssignAccountHandler(g *echo.Group) {
 	g.POST("/", CreateAccountHandler)
 	g.GET("/:id", GetAccountHandler)
 	g.GET("/", GetListAccountHandler)
+	g.PUT("/",UpdateAccount)
 
 }
 
@@ -61,6 +62,11 @@ func GetListAccountHandler(c echo.Context) error {
 		return err
 	}
 	return c.JSON(http.StatusOK,accounts)
+}
 
-
+func UpdateAccountHandler(c echo.Context) error {
+	service := c.Get("Service").(service.AccountService)
+	params := &sqlc.UpdateAccountParams{}
+	c.Bind(params)
+	accounts,err := service.UpdateAccount(params)
 }

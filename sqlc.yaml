@@ -1,8 +1,8 @@
 version: "1"
 packages:
 # TODO:うまく変更してクリーンアーキテクチャライクな構造に変えたい
-  - name: "db"
-    path: "./api/controller/sqlc"
+  - name: "sqlc"
+    path: "./api/sqlc"
     queries: "./db/query/"
     schema: "./db/migration//"
     engine: "postgresql"

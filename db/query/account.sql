@@ -23,7 +23,8 @@ DELETE FROM account
 WHERE id = $1;
 
 -- name: UpdateAccount :one
-UPDATE account SET balance = $2
+UPDATE account 
+SET owner = $2,balance = $3,currency = $4
 WHERE id = $1
 RETURNING *;
 
