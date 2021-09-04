@@ -4,7 +4,7 @@ import (
 	"log"
 	"simplebank/api/controller/handler"
 	"simplebank/api/middleware"
-	"simplebank/util"
+	"simplebank/api/util"
 
 	"github.com/labstack/echo/v4"
 )

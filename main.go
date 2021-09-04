@@ -10,15 +10,15 @@ import (
 )
 
 const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable"
+	dbDriver      = "postgres"
+	dbSource      = "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable"
 	serverAddress = ":8080"
 )
 
-func main(){
-	conn,err := sql.Open(dbDriver,dbSource)
+func main() {
+	conn, err := sql.Open(dbDriver, dbSource)
 	if err != nil {
-		log.Fatal("cannot connect to db:",err)
+		log.Fatal("cannot connect to db:", err)
 	}
 	store := sqlc.NewStore(conn)
 	server := api.NewServer(store)
