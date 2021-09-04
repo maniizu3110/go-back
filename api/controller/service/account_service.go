@@ -40,6 +40,9 @@ func (s *accountServiceImpl) CreateAccount(params *sqlc.CreateAccountParams) (sq
 }
 
 func (s *accountServiceImpl) GetListAccount(params *sqlc.ListAccountParams) ([]sqlc.Account, error) {
+	if params.Limit == 0 {
+		params.Limit = 1000
+	}
 	accouts, err := s.store.ListAccount(context.Background(), *params)
 	if err != nil {
 		return nil, err
