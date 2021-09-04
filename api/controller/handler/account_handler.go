@@ -23,7 +23,8 @@ func AssignAccountHandler(g *echo.Group) {
 	g.POST("/", CreateAccountHandler)
 	g.GET("/:id", GetAccountHandler)
 	g.GET("/", GetListAccountHandler)
-	g.PUT("/",UpdateAccount)
+	g.PUT("/",UpdateAccountHandler)
+	g.DELETE("/:id",DeleteAccountHandler)
 
 }
 
@@ -68,5 +69,23 @@ func UpdateAccountHandler(c echo.Context) error {
 	service := c.Get("Service").(service.AccountService)
 	params := &sqlc.UpdateAccountParams{}
 	c.Bind(params)
-	accounts,err := service.UpdateAccount(params)
+	account,err := service.UpdateAccount(params)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK,account)
 }
+func DeleteAccountHandler(c echo.Context) error {
+	service := c.Get("Service").(service.AccountService)
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return err
+	}
+	err = service.DeleteAccount(id)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK,"アカウントの削除が完了しました")
+}
+
+
