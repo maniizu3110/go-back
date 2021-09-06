@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"simplebank/api/controller/service"
 	"simplebank/api/sqlc"
@@ -11,10 +10,9 @@ import (
 )
 
 func AssignAccountHandler(g *echo.Group) {
-	fmt.Println("assign")
 	g = g.Group("", func(handler echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			store := c.Get("store").(*sqlc.Store)
+			store := c.Get("store").(sqlc.Store)
 			s := service.NewAccountService(store)
 			c.Set("Service", s)
 			return handler(c)
@@ -34,7 +32,7 @@ func GetAccountHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	account, err := service.GetAccountByID(id)
+	account, err := service.GetAccount(id)
 	if err != nil {
 		return err
 	}
