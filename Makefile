@@ -19,4 +19,6 @@ test:
 run:
 	go run main.go
 
-.PHONY: network postgres createdb dropdb migrateup migratedown migrateup1 migratedown1 sqlc test server mock run
+mock:
+	mockgen -package mockdb -destination db/mock/store.go  simplebank/api/sqlc Store
+.PHONY: network postgres createdb dropdb migrateup migratedown migrateup1 migratedown1 sqlc test server mock run mock

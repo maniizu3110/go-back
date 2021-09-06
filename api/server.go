@@ -6,11 +6,11 @@ import (
 )
 
 type Server struct {
-	store  *sqlc.Store
+	store  sqlc.Store
 	router *echo.Echo
 }
 
-func NewServer(store *sqlc.Store) *Server {
+func NewServer(store sqlc.Store) *Server {
 	server := &Server{store: store}
 	server.router = server.SetRouter()
 	return server
