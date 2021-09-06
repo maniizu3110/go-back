@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -39,7 +40,20 @@ func TestGetAccount(t *testing.T) {
 				requireBodyMatchAccount(t, recorder.Body, account)
 			},
 		},
-		//TODO:add more cases
+		{
+			name:      "NotFound",
+			accountID: account.ID,
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetAccount(gomock.Any(), gomock.Eq(account.ID)).
+					Times(1).
+					Return(sqlc.Account{}, sql.ErrNoRows)
+			},
+			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
+				//TODO:わかりやすいエラーハンドリング
+				require.Equal(t, http.StatusInternalServerError, recorder.Code)
+			},
+		},
 	}
 	for i := range testCases {
 		tc := testCases[i]
@@ -54,7 +68,7 @@ func TestGetAccount(t *testing.T) {
 			server := api.NewServer(store)
 			recoder := httptest.NewRecorder()
 
-			url := fmt.Sprintf("/api/v1/account/%d", account.ID)
+			url := fmt.Sprintf("/api/v1/account/%d", tc.accountID)
 			fmt.Println(url)
 			request, err := http.NewRequest(http.MethodGet, url, nil)
 			require.NoError(t, err)
