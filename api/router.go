@@ -21,6 +21,7 @@ func (server *Server) SetRouter() *echo.Echo {
 	{
 		g := e.Group("/api/v1", middleware.SetStore(server.store))
 		handler.AssignAccountHandler(g.Group("/account"))
+		handler.AssignTransferHandler(g.Group("/transfer"))
 	}
 	return e
 }

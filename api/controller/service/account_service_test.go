@@ -59,11 +59,8 @@ func TestGetAccount(t *testing.T) {
 		tc := testCases[i]
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
-			//これをNew関数に渡せばうまくserviceの形にできそう
 			store := mockdb.NewMockStore(ctrl)
 			tc.buildStubs(store)
-			// build stubs
-			// store.EXPECT().GetAccount(gomock.Any(),gomock.Eq(account.ID)).Times(1).Return(account,nil)
 
 			server := api.NewServer(store)
 			recoder := httptest.NewRecorder()
@@ -75,9 +72,6 @@ func TestGetAccount(t *testing.T) {
 
 			server.SetRouter().ServeHTTP(recoder, request)
 			tc.checkResponse(t,recoder)
-			//check response
-			// require.Equal(t,http.StatusOK,recoder.Code)
-			// requireBodyMatchAccount(t,recoder.Body,account)
 
 		})
 	}
