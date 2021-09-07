@@ -43,7 +43,6 @@ func TestGetAccount(t *testing.T) {
 		{
 			name:      "NotFound",
 			accountID: account.ID,
-			//build stubs
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					GetAccount(gomock.Any(), gomock.Eq(account.ID)).
@@ -73,7 +72,6 @@ func TestGetAccount(t *testing.T) {
 
 			server.SetRouter().ServeHTTP(recoder, request)
 			tc.checkResponse(t,recoder)
-
 
 		})
 	}
