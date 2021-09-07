@@ -38,13 +38,15 @@ func GetTransferHandler(c echo.Context) error {
 }
 
 func CreateTransferHandler(c echo.Context) error {
+	var err error
 	service := c.Get("Service").(service.TransferService)
-	type CreateTransferParams struct {
-		sqlc.CreateTransferParams
-		Currency string `json:"currency"`
-	}
 	params := &sqlc.TransferTxParams{}
-	c.Bind(params)
+	if err = c.Bind(params); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	if err = c.Validate(params); err != nil {
+		return err
+	}
 	transfer, err := service.CreateTransfer(params)
 	if err != nil {
 		//TODO:内部で起きたエラーメッセージをフロントで表示する
