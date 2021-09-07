@@ -18,7 +18,6 @@ func (v *Validator) Validate(i interface{}) error {
 	return nil
 }
 
-
 func NewValidator() (*Validator, error) {
 	validate := validator.New()
 	return &Validator{
