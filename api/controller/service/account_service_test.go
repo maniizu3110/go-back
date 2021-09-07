@@ -48,7 +48,7 @@ func TestGetAccount(t *testing.T) {
 				store.EXPECT().
 					GetAccount(gomock.Any(), gomock.Eq(account.ID)).
 					Times(1).
-					Return(sqlc.Account{}, sql.ErrNoRows)
+					Return(sqlc.Accounts{}, sql.ErrNoRows)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				//TODO:わかりやすいエラーハンドリング
@@ -80,8 +80,8 @@ func TestGetAccount(t *testing.T) {
 
 }
 
-func randomAccount() sqlc.Account {
-	return sqlc.Account{
+func randomAccount() sqlc.Accounts {
+	return sqlc.Accounts{
 		ID:       util.RandomInt(1, 1000),
 		Owner:    util.RandomOwner(),
 		Balance:  util.RandomMoney(),
@@ -89,11 +89,11 @@ func randomAccount() sqlc.Account {
 	}
 }
 
-func requireBodyMatchAccount(t *testing.T, body *bytes.Buffer, account sqlc.Account) {
+func requireBodyMatchAccount(t *testing.T, body *bytes.Buffer, account sqlc.Accounts) {
 	data, err := ioutil.ReadAll(body)
 	require.NoError(t, err)
 
-	var gotAccount sqlc.Account
+	var gotAccount sqlc.Accounts
 	err = json.Unmarshal(data, &gotAccount)
 	require.NoError(t, err)
 	require.Equal(t, account, gotAccount)

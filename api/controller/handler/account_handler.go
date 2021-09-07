@@ -54,7 +54,7 @@ func CreateAccountHandler(c echo.Context) error {
 
 func GetListAccountHandler(c echo.Context) error {
 	service := c.Get("Service").(service.AccountService)
-	params := &sqlc.ListAccountParams{}
+	params := &sqlc.ListAccountsParams{}
 	c.Bind(params)
 	accounts,err := service.GetListAccount(params)
 	if err != nil {

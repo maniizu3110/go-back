@@ -8,7 +8,7 @@ import (
 )
 
 const createEntry = `-- name: CreateEntry :one
-INSERT INTO entry (
+INSERT INTO entries (
   account_id,
   amount
 ) VALUES (
@@ -21,9 +21,9 @@ type CreateEntryParams struct {
 	Amount    int64 `json:"amount"`
 }
 
-func (q *Queries) CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry, error) {
+func (q *Queries) CreateEntry(ctx context.Context, arg CreateEntryParams) (Entries, error) {
 	row := q.db.QueryRowContext(ctx, createEntry, arg.AccountID, arg.Amount)
-	var i Entry
+	var i Entries
 	err := row.Scan(
 		&i.ID,
 		&i.AccountID,
@@ -34,13 +34,13 @@ func (q *Queries) CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry
 }
 
 const getEntry = `-- name: GetEntry :one
-SELECT id, account_id, amount, created_at FROM entry
+SELECT id, account_id, amount, created_at FROM entries
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetEntry(ctx context.Context, id int64) (Entry, error) {
+func (q *Queries) GetEntry(ctx context.Context, id int64) (Entries, error) {
 	row := q.db.QueryRowContext(ctx, getEntry, id)
-	var i Entry
+	var i Entries
 	err := row.Scan(
 		&i.ID,
 		&i.AccountID,
@@ -50,29 +50,29 @@ func (q *Queries) GetEntry(ctx context.Context, id int64) (Entry, error) {
 	return i, err
 }
 
-const listEntry = `-- name: ListEntry :many
-SELECT id, account_id, amount, created_at FROM entry
+const listEntries = `-- name: ListEntries :many
+SELECT id, account_id, amount, created_at FROM entries
 WHERE account_id = $1
 ORDER BY id
 LIMIT $2
 OFFSET $3
 `
 
-type ListEntryParams struct {
+type ListEntriesParams struct {
 	AccountID int64 `json:"account_id"`
 	Limit     int32 `json:"limit"`
 	Offset    int32 `json:"offset"`
 }
 
-func (q *Queries) ListEntry(ctx context.Context, arg ListEntryParams) ([]Entry, error) {
-	rows, err := q.db.QueryContext(ctx, listEntry, arg.AccountID, arg.Limit, arg.Offset)
+func (q *Queries) ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entries, error) {
+	rows, err := q.db.QueryContext(ctx, listEntries, arg.AccountID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Entry
+	var items []Entries
 	for rows.Next() {
-		var i Entry
+		var i Entries
 		if err := rows.Scan(
 			&i.ID,
 			&i.AccountID,

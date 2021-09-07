@@ -11,9 +11,9 @@ import (
 )
 
 type TransferService interface {
-	GetTransfer(id int64) (sqlc.Transfer, error)
+	GetTransfer(id int64) (sqlc.Transfers, error)
 	CreateTransfer(params *sqlc.TransferTxParams) (sqlc.TransferTxResult, error)
-	GetListTransfer(params *sqlc.ListTransferParams) ([]sqlc.Transfer, error)
+	GetListTransfer(params *sqlc.ListTransfersParams) ([]sqlc.Transfers, error)
 }
 
 type transferServiceImpl struct {
@@ -26,10 +26,10 @@ func NewTransferService(store sqlc.Store) TransferService {
 	return res
 }
 
-func (s *transferServiceImpl) GetTransfer(id int64) (sqlc.Transfer, error) {
+func (s *transferServiceImpl) GetTransfer(id int64) (sqlc.Transfers, error) {
 	transfer, err := s.store.GetTransfer(context.Background(), id)
 	if err != nil {
-		return sqlc.Transfer{}, err
+		return sqlc.Transfers{}, err
 	}
 	return transfer, nil
 }
@@ -51,11 +51,11 @@ func (s *transferServiceImpl) CreateTransfer(params *sqlc.TransferTxParams) (sql
 	return transfer, nil
 }
 
-func (s *transferServiceImpl) GetListTransfer(params *sqlc.ListTransferParams) ([]sqlc.Transfer, error) {
+func (s *transferServiceImpl) GetListTransfer(params *sqlc.ListTransfersParams) ([]sqlc.Transfers, error) {
 	if params.Limit == 0 {
 		params.Limit = 1000
 	}
-	accouts, err := s.store.ListTransfer(context.Background(), *params)
+	accouts, err := s.store.ListTransfers(context.Background(), *params)
 	if err != nil {
 		return nil, err
 	}

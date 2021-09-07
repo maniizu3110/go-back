@@ -57,7 +57,7 @@ func CreateTransferHandler(c echo.Context) error {
 
 func GetListTransferHandler(c echo.Context) error {
 	service := c.Get("Service").(service.TransferService)
-	params := &sqlc.ListTransferParams{}
+	params := &sqlc.ListTransfersParams{}
 	c.Bind(params)
 	transfers, err := service.GetListTransfer(params)
 	if err != nil {
