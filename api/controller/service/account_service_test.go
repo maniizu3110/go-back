@@ -74,7 +74,6 @@ func TestGetAccount(t *testing.T) {
 			server.SetRouter().ServeHTTP(recoder, request)
 			tc.checkResponse(t,recoder)
 
-
 		})
 	}
 
