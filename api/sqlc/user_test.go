@@ -14,10 +14,11 @@ func TestCreateUser(t *testing.T) {
 }
 
 func createRandomUser(t *testing.T) User {
+	hashedPassword, err := util.HashPassword(util.RandomString(6))
+	require.NoError(t, err)
 	arg := CreateUserParams{
-		Username: util.RandomOwner(),
-		//TODO:要修正
-		HashedPassword: "secret",
+		Username:       util.RandomOwner(),
+		HashedPassword: hashedPassword,
 		FullName:       util.RandomOwner(),
 		Email:          util.RandomEmail(),
 	}
@@ -47,5 +48,3 @@ func TestGetUser(t *testing.T) {
 	require.WithinDuration(t, user1.PasswordChangedAt, user2.PasswordChangedAt, time.Second)
 	require.WithinDuration(t, user1.CreatedAt, user2.CreatedAt, time.Second)
 }
-
-
