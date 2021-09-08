@@ -10,7 +10,7 @@ type AccountService interface {
 	CreateAccount(params *sqlc.CreateAccountParams) (sqlc.Account, error)
 	GetListAccount(params *sqlc.ListAccountParams) ([]sqlc.Account, error)
 	UpdateAccount(params *sqlc.UpdateAccountParams) (sqlc.Account, error)
-	DeleteAccount(id int64) error 
+	DeleteAccount(id int64) error
 }
 
 type accountServiceImpl struct {
