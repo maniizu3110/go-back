@@ -12,6 +12,7 @@ import (
 
 func (server *Server) SetRouter() *echo.Echo {
 	e := echo.New()
+	e.Use(middleware.LoggingMiddleware)
 	validator, err := util.NewValidator()
 	if err != nil {
 		log.Fatal("バリデージョンの設定に失敗しました")
