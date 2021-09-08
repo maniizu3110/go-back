@@ -19,10 +19,13 @@ func (server *Server) SetRouter() *echo.Echo {
 	}
 	e.Validator = validator
 	middleware.CORS(e)
+	//TODO:認証が必要なAPIとそれ以外を分ける（authentication）
 	{
+		//要認証認証
 		g := e.Group("/api/v1", middleware.SetStore(server.store))
 		handler.AssignAccountHandler(g.Group("/account"))
 		handler.AssignTransferHandler(g.Group("/transfer"))
+		handler.AssignUserHandler(g.Group("/user"))
 	}
 	return e
 }
