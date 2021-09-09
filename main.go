@@ -6,16 +6,10 @@ import (
 	"os"
 	"simplebank/api"
 	"simplebank/api/sqlc"
+	"simplebank/api/util"
 
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
-)
-
-//TODO:設定ファイルから読み込む
-const (
-	dbDriver      = "postgres"
-	dbSource      = "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable"
-	serverAddress = ":8080"
 )
 
 func init(){
@@ -30,12 +24,20 @@ func init(){
 
 
 func main() {
-	conn, err := sql.Open(dbDriver, dbSource)
+	config,err := util.LoadConfig(".")
+	if err != nil{
+		log.Fatal("cannot load config:",err)
+	}
+
+	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
 	store := sqlc.NewStore(conn)
-	server := api.NewServer(store)
+	server,err := api.NewServer(config,store)
+	if err != nil {
+		log.Fatal("cannot create new server:",err)
+	}
 
-	server.Start(serverAddress)
+	server.Start(config.ServerAddress)
 }

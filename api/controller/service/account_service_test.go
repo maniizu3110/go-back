@@ -13,6 +13,7 @@ import (
 	"simplebank/api/util"
 	mockdb "simplebank/db/mock"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
@@ -61,8 +62,13 @@ func TestGetAccount(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			store := mockdb.NewMockStore(ctrl)
 			tc.buildStubs(store)
-
-			server := api.NewServer(store)
+			//TODO:api.NewTestServer使うべき
+			config := util.Config{
+				TokenSymmetricKey:   util.RandomString(32),
+				AccessTokenDuration: time.Minute,
+			}
+			server, err := api.NewServer(config, store)
+			require.NoError(t, err)
 			recoder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/api/v1/account/%d", tc.accountID)
@@ -71,7 +77,7 @@ func TestGetAccount(t *testing.T) {
 			require.NoError(t, err)
 
 			server.SetRouter().ServeHTTP(recoder, request)
-			tc.checkResponse(t,recoder)
+			tc.checkResponse(t, recoder)
 
 		})
 	}
