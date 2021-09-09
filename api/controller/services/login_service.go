@@ -1,34 +1,49 @@
 package services
 
 import (
+	"context"
 	"simplebank/api/sqlc"
 	"simplebank/api/util"
+	"simplebank/token"
 )
 
 type LoginService interface {
-	LoginUser(params *LoginUserRequest)(*LoginUserResponse,error) 
+	LoginUser(params *LoginUserRequest) (*loginUserResponse, error)
 }
 
 type loginServiceImpl struct {
-	store sqlc.Store
+	store      sqlc.Store
+	tokenMaker token.Maker
+	config     util.Config
 }
 
-func NewLoginService(store sqlc.Store) LoginService {
-	res := &userServiceImpl{}
+func NewLoginService(store sqlc.Store, tokenMaker token.Maker, config util.Config) LoginService {
+	res := &loginServiceImpl{}
 	res.store = store
+	res.tokenMaker = tokenMaker
+	res.config = config
 	return res
 }
 
-
-func (s *userServiceImpl) LoginUser(params *LoginUserRequest)(*LoginUserResponse,error) {
-	user,err := s.GetUser(params.Username)
+func (s *loginServiceImpl) LoginUser(params *LoginUserRequest) (*loginUserResponse, error) {
+	user, err := s.store.GetUser(context.Background(),params.Username)
+	if err != nil {
+		return nil, err
+	}
+	err = util.CheckPassword(params.Password, user.HashedPassword)
+	if err != nil {
+		return nil, err
+	}
+	accessToken, err := s.tokenMaker.CreateToken(user.Username,s.config.AccessTokenDuration)
 	if err != nil {
 		return nil,err
 	}
-	err = util.CheckPassword(params.Password,user.HashedPassword)
-	if err != nil {
-		return nil,err
+	createdUser := newUserResponse(user)
+	res := &loginUserResponse{
+		AccessToken:accessToken,
+		User:*createdUser,
 	}
+	return res,nil
 }
 
 type LoginUserRequest struct {
@@ -36,7 +51,7 @@ type LoginUserRequest struct {
 	Password string `json:"password" validate:"required,min=6"`
 }
 
-type LoginUserResponse struct {
+type loginUserResponse struct {
 	AccessToken string       `json:"access_token"`
 	User        userResponse `json:"user"`
 }
