@@ -47,7 +47,7 @@ func (s *loginServiceImpl) LoginUser(params *LoginUserRequest) (*loginUserRespon
 }
 
 type LoginUserRequest struct {
-	Username string `json:"username" validate:"required,alphanium"`
+	Username string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required,min=6"`
 }
 

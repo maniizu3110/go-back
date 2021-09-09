@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"simplebank/api/controller/services"
 	"simplebank/api/sqlc"
@@ -30,6 +29,10 @@ func LoginUserHandler(c echo.Context)error{
 	service := c.Get("Service").(services.LoginService)
 	params := &services.LoginUserRequest{}
 	c.Bind(params)
+	err := c.Validate(params)
+	if err != nil {
+		return err
+	}
 	res,err := service.LoginUser(params)
 	if err != nil {
 		return err
