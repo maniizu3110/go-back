@@ -2,7 +2,7 @@ package handler
 
 import (
 	"net/http"
-	"simplebank/api/controller/service"
+	"simplebank/api/controller/services"
 	"simplebank/api/sqlc"
 	"strconv"
 
@@ -13,7 +13,7 @@ func AssignAccountHandler(g *echo.Group) {
 	g = g.Group("", func(handler echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			store := c.Get("store").(sqlc.Store)
-			s := service.NewAccountService(store)
+			s := services.NewAccountService(store)
 			c.Set("Service", s)
 			return handler(c)
 		}
@@ -27,7 +27,7 @@ func AssignAccountHandler(g *echo.Group) {
 }
 
 func GetAccountHandler(c echo.Context) error {
-	service := c.Get("Service").(service.AccountService)
+	service := c.Get("Service").(services.AccountService)
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return err
@@ -40,7 +40,7 @@ func GetAccountHandler(c echo.Context) error {
 }
 
 func CreateAccountHandler(c echo.Context) error {
-	service := c.Get("Service").(service.AccountService)
+	service := c.Get("Service").(services.AccountService)
 	params := &sqlc.CreateAccountParams{}
 	c.Bind(params)
 	//TODO:validation
@@ -53,7 +53,7 @@ func CreateAccountHandler(c echo.Context) error {
 }
 
 func GetListAccountHandler(c echo.Context) error {
-	service := c.Get("Service").(service.AccountService)
+	service := c.Get("Service").(services.AccountService)
 	params := &sqlc.ListAccountParams{}
 	c.Bind(params)
 	accounts,err := service.GetListAccount(params)
@@ -64,7 +64,7 @@ func GetListAccountHandler(c echo.Context) error {
 }
 
 func UpdateAccountHandler(c echo.Context) error {
-	service := c.Get("Service").(service.AccountService)
+	service := c.Get("Service").(services.AccountService)
 	params := &sqlc.UpdateAccountParams{}
 	c.Bind(params)
 	account,err := service.UpdateAccount(params)
@@ -74,7 +74,7 @@ func UpdateAccountHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK,account)
 }
 func DeleteAccountHandler(c echo.Context) error {
-	service := c.Get("Service").(service.AccountService)
+	service := c.Get("Service").(services.AccountService)
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return err

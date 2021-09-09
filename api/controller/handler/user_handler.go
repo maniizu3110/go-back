@@ -2,9 +2,8 @@ package handler
 
 import (
 	"net/http"
-	"simplebank/api/controller/service"
+	"simplebank/api/controller/services"
 	"simplebank/api/sqlc"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
@@ -14,18 +13,19 @@ func AssignUserHandler(g *echo.Group) {
 	g = g.Group("", func(handler echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			store := c.Get("store").(sqlc.Store)
-			s := service.NewUserService(store)
+			s := services.NewUserService(store)
 			c.Set("Service", s)
 			return handler(c)
 		}
 	})
 	g.POST("/", CreateUserHandler)
 	g.GET("/", GetUserHandler)
+	g.GET("/login", LoginUserHandler)
 
 }
 
 func GetUserHandler(c echo.Context) error {
-	service := c.Get("Service").(service.UserService)
+	service := c.Get("Service").(services.UserService)
 	type getUserParams struct {
 		Username string
 	}
@@ -41,7 +41,7 @@ func GetUserHandler(c echo.Context) error {
 }
 
 func CreateUserHandler(c echo.Context) error {
-	service := c.Get("Service").(service.UserService)
+	service := c.Get("Service").(services.UserService)
 	params := &sqlc.CreateUserParams{}
 	c.Bind(params)
 	//TODO:validation
@@ -49,19 +49,5 @@ func CreateUserHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	type createUserResponse struct {
-		Username          string    `json:"username"`
-		FullName          string    `json:"full_name"`
-		Email             string    `json:"email"`
-		PasswordChangedAt time.Time `json:"password_changed_at"`
-		CreatedAt         time.Time `json:"created_at"`
-	}
-	res := createUserResponse{
-		Username:  user.Username,
-		FullName:  user.FullName,
-		Email:     user.Email,
-		CreatedAt: user.CreatedAt,
-	}
-
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, user)
 }

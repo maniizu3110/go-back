@@ -2,7 +2,7 @@ package handler
 
 import (
 	"net/http"
-	"simplebank/api/controller/service"
+	"simplebank/api/controller/services"
 	"simplebank/api/sqlc"
 	"strconv"
 
@@ -13,7 +13,7 @@ func AssignTransferHandler(g *echo.Group) {
 	g = g.Group("", func(handler echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			store := c.Get("store").(sqlc.Store)
-			s := service.NewTransferService(store)
+			s := services.NewTransferService(store)
 			c.Set("Service", s)
 			return handler(c)
 		}
@@ -25,7 +25,7 @@ func AssignTransferHandler(g *echo.Group) {
 }
 
 func GetTransferHandler(c echo.Context) error {
-	service := c.Get("Service").(service.TransferService)
+	service := c.Get("Service").(services.TransferService)
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		return err
@@ -39,7 +39,7 @@ func GetTransferHandler(c echo.Context) error {
 
 func CreateTransferHandler(c echo.Context) error {
 	var err error
-	service := c.Get("Service").(service.TransferService)
+	service := c.Get("Service").(services.TransferService)
 	params := &sqlc.TransferTxParams{}
 	if err = c.Bind(params); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -56,7 +56,7 @@ func CreateTransferHandler(c echo.Context) error {
 }
 
 func GetListTransferHandler(c echo.Context) error {
-	service := c.Get("Service").(service.TransferService)
+	service := c.Get("Service").(services.TransferService)
 	params := &sqlc.ListTransferParams{}
 	c.Bind(params)
 	transfers, err := service.GetListTransfer(params)
