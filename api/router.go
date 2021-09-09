@@ -21,6 +21,16 @@ func (server *Server) SetRouter() *echo.Echo {
 	middleware.CORS(e)
 	//TODO:認証が必要なAPIとそれ以外を分ける（authentication）
 	{
+		//認証不要
+		g := e.Group("/api/v1",
+		 middleware.SetStore(server.store),
+		 middleware.SetConfig(server.config),
+		 middleware.SetTokenMaker(server.tokenMaker),
+	)
+		handler.AssignLoginHandler(g.Group("/login"))
+		
+	}
+	{
 		//要認証認証
 		g := e.Group("/api/v1", middleware.SetStore(server.store))
 		handler.AssignAccountHandler(g.Group("/account"))

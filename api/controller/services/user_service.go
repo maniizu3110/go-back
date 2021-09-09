@@ -1,14 +1,15 @@
-package service
+package services
 
 import (
 	"context"
 	"simplebank/api/sqlc"
 	"simplebank/api/util"
+	"time"
 )
 
 type UserService interface {
 	GetUser(username string) (sqlc.User, error)
-	CreateUser(params *sqlc.CreateUserParams) (sqlc.User, error)
+	CreateUser(params *sqlc.CreateUserParams) (*userResponse, error)
 }
 
 type userServiceImpl struct {
@@ -29,11 +30,11 @@ func (s *userServiceImpl) GetUser(username string) (sqlc.User, error) {
 	return user, nil
 }
 
-func (s *userServiceImpl) CreateUser(params *sqlc.CreateUserParams) (sqlc.User, error) {
+func (s *userServiceImpl) CreateUser(params *sqlc.CreateUserParams) (*userResponse, error) {
 	//TODO:ここではまだhashedされてないのでPasswordで扱いたい
 	hashedPassword, err := util.HashPassword(params.HashedPassword)
 	if err != nil {
-		return sqlc.User{},err
+		return &userResponse{}, err
 	}
 	newParams := sqlc.CreateUserParams{
 		Username:       params.Username,
@@ -43,7 +44,27 @@ func (s *userServiceImpl) CreateUser(params *sqlc.CreateUserParams) (sqlc.User, 
 	}
 	user, err := s.store.CreateUser(context.Background(), newParams)
 	if err != nil {
-		return sqlc.User{}, err
+		return &userResponse{}, err
 	}
-	return user, nil
+
+	res := newUserResponse(user)
+	return res, nil
 }
+
+func newUserResponse(user sqlc.User) *userResponse {
+	return &userResponse{
+		Username:  user.Username,
+		FullName:  user.FullName,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt,
+	}
+}
+
+type userResponse struct {
+	Username          string    `json:"username"`
+	FullName          string    `json:"full_name"`
+	Email             string    `json:"email"`
+	PasswordChangedAt time.Time `json:"password_changed_at"`
+	CreatedAt         time.Time `json:"created_at"`
+}
+
