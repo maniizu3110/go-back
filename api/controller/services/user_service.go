@@ -4,7 +4,6 @@ import (
 	"context"
 	"simplebank/api/sqlc"
 	"simplebank/api/util"
-	"simplebank/token"
 	"time"
 )
 
@@ -15,7 +14,6 @@ type UserService interface {
 
 type userServiceImpl struct {
 	store sqlc.Store
-	tokenMaker token.Maker
 }
 
 func NewUserService(store sqlc.Store) UserService {
