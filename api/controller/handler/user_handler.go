@@ -20,8 +20,6 @@ func AssignUserHandler(g *echo.Group) {
 	})
 	g.POST("/", CreateUserHandler)
 	g.GET("/", GetUserHandler)
-	g.GET("/login", LoginUserHandler)
-
 }
 
 func GetUserHandler(c echo.Context) error {

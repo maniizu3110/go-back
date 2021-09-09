@@ -23,7 +23,7 @@ test:
 	go test -v -cover ./...
 
 run:
-	LOG_LEVEL=debug go run main.go
+	go run main.go
 
 mock:
 	mockgen -package mockdb -destination db/mock/store.go  simplebank/api/sqlc Store
