@@ -2,7 +2,6 @@
 FROM golang:1.17-alpine3.14 AS builder
 WORKDIR /app
 COPY . .
-RUN go mod tidy
 RUN go build -o main main.go
 
 # Run stage
