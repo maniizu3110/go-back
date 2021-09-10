@@ -18,7 +18,6 @@ func AssignUserHandler(g *echo.Group) {
 			return handler(c)
 		}
 	})
-	g.POST("/", CreateUserHandler)
 	g.GET("/", GetUserHandler)
 }
 
@@ -38,14 +37,3 @@ func GetUserHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, User)
 }
 
-func CreateUserHandler(c echo.Context) error {
-	service := c.Get("Service").(services.UserService)
-	params := &sqlc.CreateUserParams{}
-	c.Bind(params)
-	//TODO:validation
-	user, err := service.CreateUser(params)
-	if err != nil {
-		return err
-	}
-	return c.JSON(http.StatusOK, user)
-}

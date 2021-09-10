@@ -30,6 +30,7 @@ func (server *Server) SetRouter() *echo.Echo {
 			middleware.SetTokenMaker(server.tokenMaker),
 		)
 		handler.AssignLoginHandler(g.Group("/login"))
+		handler.AssignSignHandler(g.Group("/sign"))
 
 	}
 	{

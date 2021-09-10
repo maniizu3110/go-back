@@ -3,13 +3,11 @@ package services
 import (
 	"context"
 	"simplebank/api/sqlc"
-	"simplebank/api/util"
 	"time"
 )
 
 type UserService interface {
 	GetUser(username string) (sqlc.User, error)
-	CreateUser(params *sqlc.CreateUserParams) (*userResponse, error)
 }
 
 type userServiceImpl struct {
@@ -28,27 +26,6 @@ func (s *userServiceImpl) GetUser(username string) (sqlc.User, error) {
 		return sqlc.User{}, err
 	}
 	return user, nil
-}
-
-func (s *userServiceImpl) CreateUser(params *sqlc.CreateUserParams) (*userResponse, error) {
-	//TODO:ここではまだhashedされてないのでPasswordで扱いたい
-	hashedPassword, err := util.HashPassword(params.HashedPassword)
-	if err != nil {
-		return &userResponse{}, err
-	}
-	newParams := sqlc.CreateUserParams{
-		Username:       params.Username,
-		HashedPassword: hashedPassword,
-		FullName:       params.FullName,
-		Email:          params.Email,
-	}
-	user, err := s.store.CreateUser(context.Background(), newParams)
-	if err != nil {
-		return &userResponse{}, err
-	}
-
-	res := newUserResponse(user)
-	return res, nil
 }
 
 func newUserResponse(user sqlc.User) *userResponse {
