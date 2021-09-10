@@ -1,8 +1,8 @@
 createdb:
-	docker exec -it simplebank_db_1 createdb --username=root --owner=root simple_bank
+	docker exec -it workspace_db_1 createdb --username=root --owner=root simple_bank
 
 dropdb:
-	docker exec -it simplebank_db_1 dropdb simple_bank
+	docker exec -it workspace_db_1 dropdb simple_bank
 
 migrateup:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
