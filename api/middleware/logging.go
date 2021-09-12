@@ -18,6 +18,7 @@ func LoggingMiddleware(next echo.HandlerFunc) echo.HandlerFunc{
 			"path":c.Path(),
 			"status":c.Response().Status,
 			"latency_ns":time.Since(start).Nanoseconds(),
+			//TODO:下記Infoににエラー内容入れてやる
 		}).Info("request details")
 
 		return res
