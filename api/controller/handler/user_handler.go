@@ -27,7 +27,6 @@ func GetUserHandler(c echo.Context) error {
 		Username string
 	}
 	params := &getUserParams{}
-	//TODO:エラーハンドリング
 	c.Bind(params)
 	User, err := service.GetUser(params.Username)
 	if err != nil {

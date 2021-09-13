@@ -1,12 +1,12 @@
 package api
 
 import (
-	"log"
 	"simplebank/api/controller/handler"
 	"simplebank/api/middleware"
 	"simplebank/api/util"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 )
 
 func (server *Server) SetRouter() *echo.Echo {
@@ -14,7 +14,7 @@ func (server *Server) SetRouter() *echo.Echo {
 	e.Use(middleware.LoggingMiddleware)
 	validator, err := util.NewValidator()
 	if err != nil {
-		log.Fatal("バリデージョンの設定に失敗しました")
+		logrus.Fatal("バリデージョンの設定に失敗しました")
 	}
 	if server.config.Env != "prod" {
 		e.Debug = true

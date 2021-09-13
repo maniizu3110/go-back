@@ -5,6 +5,7 @@ import (
 	"simplebank/api/controller/services"
 	"simplebank/api/sqlc"
 	"simplebank/api/util"
+	"simplebank/lib/myerror"
 	"simplebank/token"
 
 	"github.com/labstack/echo/v4"
@@ -22,7 +23,6 @@ func AssignLoginHandler(g *echo.Group) {
 		}
 	})
 	g.POST("/", LoginUserHandler)
-
 }
 
 func LoginUserHandler(c echo.Context)error{
@@ -31,12 +31,11 @@ func LoginUserHandler(c echo.Context)error{
 	c.Bind(params)
 	err := c.Validate(params)
 	if err != nil {
-		return err
+		return c.JSON(myerror.Set(http.StatusBadRequest,err))
 	}
 	res,err := service.LoginUser(params)
 	if err != nil {
-		return err
+		return c.JSON(myerror.Set(http.StatusBadRequest,err))
 	}
 	return c.JSON(http.StatusOK,res)
-
 }
