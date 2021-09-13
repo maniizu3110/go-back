@@ -5,6 +5,7 @@ import (
 	"simplebank/api/controller/services"
 	"simplebank/api/sqlc"
 	"simplebank/api/util"
+	"simplebank/lib/myerror"
 	"simplebank/token"
 
 	"github.com/labstack/echo/v4"
@@ -35,7 +36,7 @@ func LoginUserHandler(c echo.Context)error{
 	}
 	res,err := service.LoginUser(params)
 	if err != nil {
-		return err
+		return c.JSON(myerror.Set(http.StatusBadRequest,err))
 	}
 	return c.JSON(http.StatusOK,res)
 
